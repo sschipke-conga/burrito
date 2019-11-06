@@ -10,3 +10,7 @@
   padding: 0;
   width: 150px;
 }
+
+.no-ingredients {
+  color: red;
+}

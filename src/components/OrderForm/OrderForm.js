@@ -6,7 +6,8 @@ class OrderForm extends Component {
     this.props = props;
     this.state = {
       name: '',
-      ingredients: []
+      ingredients: [],
+      noIngredients: ''
     };
   }
 
@@ -20,8 +21,14 @@ class OrderForm extends Component {
   }
 
   handleSubmit = e => {
+    const {ingredients} = this.state
     e.preventDefault();
-    this.clearInputs();
+    if(!ingredients.length) {
+      this.setState({noIngredients: 'You must have at least one ingredient'})
+    } else {
+      this.clearInputs();
+      this.setState({noIngredients: ''})
+    }
   }
 
   clearInputs = () => {
@@ -29,6 +36,7 @@ class OrderForm extends Component {
   }
 
   render() {
+    const { noIngredients } = this.state;
     const possibleIngredients = ['beans', 'steak', 'carnitas', 'sofritas', 'lettuce', 'queso fresco', 'pico de gallo', 'hot sauce', 'guacamole', 'jalapenos', 'cilantro', 'sour cream'];
     const ingredientButtons = possibleIngredients.map(ingredient => {
       return (
@@ -51,6 +59,7 @@ class OrderForm extends Component {
         { ingredientButtons }
 
         <p>Order: { this.state.ingredients.join(', ') || 'Nothing selected' }</p>
+        {noIngredients && <p className="no-ingredients">{noIngredients}</p>}
 
         <button onClick={e => this.handleSubmit(e)}>
           Submit Order
