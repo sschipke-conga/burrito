@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import {setOrder} from '../../actions/index';
 import {postOrder} from '../../apiCalls';
 
-class OrderForm extends Component {
+export class OrderForm extends Component {
   constructor(props) {
     super();
     this.props = props;
@@ -31,8 +31,12 @@ class OrderForm extends Component {
       this.setState({noIngredients: 'You must have at least one ingredient'})
     } else {
     const order = {name: this.state.name, ingredients: this.state.ingredients}
+    try {
       let newOrder = await postOrder(order)
       this.props.setOrder(newOrder)
+    } catch ({message}) {
+      this.setState({noIngredients: message})
+    }
       this.clearInputs();
       this.setState({noIngredients: ''})
     }
