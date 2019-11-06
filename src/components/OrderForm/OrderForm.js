@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {setOrder} from '../../actions/index';
+import {postOrder} from '../../apiCalls';
 
 class OrderForm extends Component {
   constructor(props) {
@@ -20,12 +24,15 @@ class OrderForm extends Component {
     this.setState({ingredients: [...this.state.ingredients, e.target.name]});
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     const {ingredients} = this.state
     e.preventDefault();
     if(!ingredients.length) {
       this.setState({noIngredients: 'You must have at least one ingredient'})
     } else {
+    const order = {name: this.state.name, ingredients: this.state.ingredients}
+      let newOrder = await postOrder(order)
+      this.props.setOrder(newOrder)
       this.clearInputs();
       this.setState({noIngredients: ''})
     }
@@ -47,13 +54,14 @@ class OrderForm extends Component {
     });
 
     return (
-      <form>
+      <form onSubmit={e => this.handleSubmit(e)}>
         <input
           type='text'
           placeholder='Name'
           name='name'
           value={this.state.name}
           onChange={e => this.handleNameChange(e)}
+          required
         />
 
         { ingredientButtons }
@@ -61,7 +69,7 @@ class OrderForm extends Component {
         <p>Order: { this.state.ingredients.join(', ') || 'Nothing selected' }</p>
         {noIngredients && <p className="no-ingredients">{noIngredients}</p>}
 
-        <button onClick={e => this.handleSubmit(e)}>
+        <button type="submit">
           Submit Order
         </button>
       </form>
@@ -69,4 +77,10 @@ class OrderForm extends Component {
   }
 }
 
-export default OrderForm;
+export const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    setOrder,
+  }, dispatch)
+);
+
+export default connect(null, mapDispatchToProps)(OrderForm);
