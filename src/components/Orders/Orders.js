@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setOrders } from '../../actions';
-import { getOrders } from '../../apiCalls';
+import { setOrders, deleteOrder } from '../../actions';
+import { getOrders, removeOrder } from '../../apiCalls';
 
 import './Orders.css';
 
@@ -15,6 +15,14 @@ export class Orders extends Component {
       .catch(err => console.error('Error fetching:', err));
   }
 
+  getRidOfOrder = e => {
+    const selectedId = parseInt(e.target.id)
+    removeOrder(selectedId)
+    this.props.deleteOrder(selectedId)
+  }
+
+
+
     render() {
       const orderEls = this.props.orders.map((order, i) => {
         return (
@@ -25,6 +33,7 @@ export class Orders extends Component {
                 return <li key={i}>{ingredient}</li>
               })}
             </ul>
+            <button id={order.id} onClick={this.getRidOfOrder}>Remove Order</button>
           </div>
         )
       });
@@ -43,6 +52,7 @@ export const mapStateToProps = ({ orders }) => ({
 export const mapDispatchToProps = dispatch => (
   bindActionCreators({
     setOrders,
+    deleteOrder
   }, dispatch)
 );
 
