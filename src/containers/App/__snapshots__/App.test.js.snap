@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App should match the snapshot 1`] = `
+<main
+  className="App"
+>
+  <header>
+    <h1>
+      Burrito Builder
+    </h1>
+    <Connect(OrderForm) />
+  </header>
+  <Connect(Orders) />
+</main>
+`;
